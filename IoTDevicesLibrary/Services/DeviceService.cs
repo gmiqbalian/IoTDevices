@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IoTDevicesLibrary.Services;
 
-public class DeviceService
+public class DeviceService : IDeviceService
 {
     private readonly DeviceConfiguration _deviceConfig;
     private readonly DeviceClient _deviceClient;

@@ -10,14 +10,14 @@ namespace Television
 {
     public partial class MainWindow : Window
     {
-        private readonly DeviceService _deviceManager;
+        private readonly IDeviceService _deviceService;
         private readonly DeviceConfiguration _deviceConfig;
-        private readonly NetworkService _networkService;
-        public MainWindow(DeviceService deviceManager, DeviceConfiguration deviceConfig, NetworkService networkService)
+        private readonly INetworkService _networkService;
+        public MainWindow(IDeviceService deviceService, DeviceConfiguration deviceConfig, INetworkService networkService)
         {
             InitializeComponent();
 
-            _deviceManager = deviceManager;
+            _deviceService = deviceService;
             _deviceConfig = deviceConfig;
             _networkService = networkService;
 
@@ -26,12 +26,20 @@ namespace Television
         }
         private async Task ToggleMusicIconStateAsync()
         {
+            Storyboard tv = (Storyboard)this.FindResource("TvStoryboard");
+
             while(true)
             {
-                if(_deviceConfig.IsConnectionAllowed)
+                if (_deviceConfig.IsConnectionAllowed)
+                {
                     MusicIcon.Visibility = Visibility.Visible;
+                    tv.Begin();
+                }
                 else
+                {
                     MusicIcon.Visibility = Visibility.Hidden;
+                    tv.Stop();
+                }
             
                 await Task.Delay(5000);
             }

@@ -11,14 +11,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Television
+namespace Speakers
 {
     public partial class App : Application
     {
-        public static IHost? appHost { get; set; }
+        private static IHost? _speakerAppHost { get; set; }
         public App()
         {
-            appHost = Host.CreateDefaultBuilder()
+            _speakerAppHost = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration(config =>
                 {
                     config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
@@ -26,20 +26,19 @@ namespace Television
                 .ConfigureServices((config, services) =>
                 {
                     services.AddSingleton<MainWindow>();
-                    services.AddSingleton(new DeviceConfiguration(config.Configuration.GetConnectionString("Tv")));
-                    services.AddSingleton<IDeviceService, DeviceService>();
-                    services.AddSingleton<INetworkService, NetworkService>();
-
+                    services.AddSingleton(new DeviceConfiguration(config.Configuration.GetConnectionString("Speakers")));
+                    services.AddSingleton<NetworkService>();
+                    services.AddSingleton<DeviceService>();
                 })
                 .Build();
         }
         protected override async void OnStartup(StartupEventArgs e)
         {
-            await appHost!.StartAsync();
+            await _speakerAppHost!.StartAsync();
 
-            var mainWindow = appHost.Services.GetRequiredService<MainWindow>();
+            var mainWindow = _speakerAppHost.Services.GetRequiredService<MainWindow>();
             mainWindow.Show();
-                       
+
             base.OnStartup(e);
         }
     }

@@ -11,35 +11,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Television
+namespace WashingMachine
 {
     public partial class App : Application
     {
-        public static IHost? appHost { get; set; }
+        private static IHost _washingMachineAppHost { get; set; }
         public App()
         {
-            appHost = Host.CreateDefaultBuilder()
+            _washingMachineAppHost = Host.CreateDefaultBuilder()
                 .ConfigureAppConfiguration(config =>
                 {
-                    config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                    config.AddJsonFile("appsettings.json", optional:true, reloadOnChange:true);
                 })
                 .ConfigureServices((config, services) =>
                 {
                     services.AddSingleton<MainWindow>();
-                    services.AddSingleton(new DeviceConfiguration(config.Configuration.GetConnectionString("Tv")));
-                    services.AddSingleton<IDeviceService, DeviceService>();
-                    services.AddSingleton<INetworkService, NetworkService>();
-
+                    services.AddSingleton(new DeviceConfiguration(config.Configuration.GetConnectionString("WashingMachine")));
+                    services.AddSingleton<NetworkService>();
+                    services.AddSingleton<DeviceService>();
                 })
                 .Build();
         }
         protected override async void OnStartup(StartupEventArgs e)
         {
-            await appHost!.StartAsync();
+            await _washingMachineAppHost!.StartAsync();
 
-            var mainWindow = appHost.Services.GetRequiredService<MainWindow>();
+            var mainWindow = _washingMachineAppHost.Services.GetRequiredService<MainWindow>();
             mainWindow.Show();
-                       
+
             base.OnStartup(e);
         }
     }

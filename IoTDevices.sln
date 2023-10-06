@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Television", "Television\Television.csproj", "{F79E3BFE-E705-4D5F-9B34-E123F325CBB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Television", "Television\Television.csproj", "{F79E3BFE-E705-4D5F-9B34-E123F325CBB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTDevicesLibrary", "IoTDevicesLibrary\IoTDevicesLibrary.csproj", "{3BF5D902-316B-446F-AF84-36DB743A27A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoTDevicesLibrary", "IoTDevicesLibrary\IoTDevicesLibrary.csproj", "{3BF5D902-316B-446F-AF84-36DB743A27A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WashingMachine", "WashingMachine\WashingMachine.csproj", "{503887EC-E221-4D17-B8E7-968845B1498F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speakers", "Speakers\Speakers.csproj", "{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{3BF5D902-316B-446F-AF84-36DB743A27A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BF5D902-316B-446F-AF84-36DB743A27A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BF5D902-316B-446F-AF84-36DB743A27A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{503887EC-E221-4D17-B8E7-968845B1498F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{503887EC-E221-4D17-B8E7-968845B1498F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{503887EC-E221-4D17-B8E7-968845B1498F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{503887EC-E221-4D17-B8E7-968845B1498F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
