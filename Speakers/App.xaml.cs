@@ -27,8 +27,8 @@ namespace Speakers
                 {
                     services.AddSingleton<MainWindow>();
                     services.AddSingleton(new DeviceConfiguration(config.Configuration.GetConnectionString("Speakers")));
-                    services.AddSingleton<NetworkService>();
-                    services.AddSingleton<DeviceService>();
+                    services.AddSingleton<INetworkService, NetworkService>();
+                    services.AddSingleton<IDeviceService, DeviceService>();
                 })
                 .Build();
         }
