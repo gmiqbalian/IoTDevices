@@ -5,8 +5,59 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Television"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Smart TV" Height="450" Width="400">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
 
+        <Grid Grid.Row="0">
+            <TextBlock  
+                       FontFamily="{StaticResource FontAwesome-Regular}"
+                       Text="&#xf26c;"
+                       FontSize="180"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock FontFamily="{StaticResource FontAwesome-Solid}" 
+                       x:Name="MusicIcon"
+                       Text="&#xf001;"
+                       FontSize="60"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="-15 -45 0 0"
+                       Visibility="Hidden">
+            </TextBlock>
+
+        </Grid>
+        
+        <Grid Grid.Row="1">
+            <TextBlock 
+                x:Name="ConnectivityStatus"
+                Text="Disconnected"
+                FontSize="25"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="Red"
+                Foreground="White"
+                Padding="15 15 15 15"
+                Margin="0 40 0 40"/>
+        </Grid>
     </Grid>
+
+    <!--<Window.Resources>
+        <Storyboard x:Key="MusicIconStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="MusicIcon" 
+                Storyboard.TargetProperty="ScaleX"
+                From="1" To="1.5"/>
+                
+            <DoubleAnimation
+            Storyboard.TargetName="MusicIcon"
+            Storyboard.TargetProperty="ScaleY"
+            From="1" To="1.5"
+            RepeatBehavior="Forever"/>
+        </Storyboard>
+    </Window.Resources>-->
 </Window>
