@@ -30,7 +30,7 @@ namespace Television
 
             while(true)
             {
-                if (_deviceConfig.IsConnectionAllowed)
+                if (_deviceConfig.IsSendingAllowed)
                 {
                     MusicIcon.Visibility = Visibility.Visible;
                     tv.Begin();

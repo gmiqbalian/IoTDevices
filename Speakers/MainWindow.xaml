@@ -38,6 +38,12 @@
                 Foreground="White"
                 Padding="15 15 15 15"
                 Margin="0 40 0 40"/>
+
+            <TextBlock x:Name="MessageToCloud" 
+                       HorizontalAlignment="Center"
+                       FontSize="20"
+                       Text="text">
+            </TextBlock>
         </Grid>
     </Grid>
     <Window.Resources>

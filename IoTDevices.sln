@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Television", "Television\Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoTDevicesLibrary", "IoTDevicesLibrary\IoTDevicesLibrary.csproj", "{3BF5D902-316B-446F-AF84-36DB743A27A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WashingMachine", "WashingMachine\WashingMachine.csproj", "{503887EC-E221-4D17-B8E7-968845B1498F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WashingMachine", "WashingMachine\WashingMachine.csproj", "{503887EC-E221-4D17-B8E7-968845B1498F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speakers", "Speakers\Speakers.csproj", "{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Speakers", "Speakers\Speakers.csproj", "{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTDevicesAzureFunctions", "IoTDevicesAzureFunctions\IoTDevicesAzureFunctions.csproj", "{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

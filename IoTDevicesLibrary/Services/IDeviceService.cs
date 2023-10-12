@@ -9,6 +9,6 @@ namespace IoTDevicesLibrary.Services
 {
     public interface IDeviceService
     {
-
+        Task<bool> SendDataAsync(string payload);
     }
 }

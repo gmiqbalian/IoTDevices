@@ -1,5 +1,7 @@
 ﻿using IoTDevicesLibrary.Models;
 using IoTDevicesLibrary.Services;
+using Newtonsoft.Json;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -20,8 +22,11 @@ namespace Speakers
             _deviceService = deviceService;
             _deviceConfiguration = deviceConfiguration;
 
+            //Task.Run(SendTelemetryDataAsync);
             Task.WhenAll(TestConnectivityAsync(),
-                ToggleSpeakersState());
+                ToggleSpeakersState(),
+                SendTelemetryDataAsync()
+                );
         }
 
         private async Task ToggleSpeakersState()
@@ -30,7 +35,7 @@ namespace Speakers
 
             while (true)
             {
-                if (_deviceConfiguration.IsConnectionAllowed)
+                if (_deviceConfiguration.IsSendingAllowed)
                     machine.Begin();
                 else
                     machine.Stop();
@@ -51,6 +56,28 @@ namespace Speakers
                     ConnectivityStatus.Background = Brushes.Red;
 
                 await Task.Delay(1000);
+            }
+        }
+        private async Task SendTelemetryDataAsync()
+        {
+            while (true)
+            {
+                if (_deviceConfiguration.IsSendingAllowed)
+                {
+                    var payload = new
+                    {
+                        BatteryLevel = "70%",
+                        SpeakerTemp = "2",
+                        DeviceState = "active",
+                        TimeStamp = DateTime.Now
+                    };
+                    var json = JsonConvert.SerializeObject(payload);
+
+                    if (await _deviceService.SendDataAsync(json))
+                        MessageToCloud.Text = $"Message sent to cloud : {json}";
+
+                    await Task.Delay(1000);
+                };
             }
         }
     }

@@ -29,7 +29,7 @@ public partial class MainWindow : Window
         
         while (true)
         {
-            if (_deviceConfiguration.IsConnectionAllowed)
+            if (_deviceConfiguration.IsSendingAllowed)
                 machine.Begin();
             else
                 machine.Stop();
