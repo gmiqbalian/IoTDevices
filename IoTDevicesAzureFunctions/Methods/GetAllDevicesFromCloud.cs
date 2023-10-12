@@ -6,6 +6,7 @@ using Microsoft.Azure.Devices.Shared;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace IoTDevicesAzureFunctions.Methods
 {
@@ -28,12 +29,11 @@ namespace IoTDevicesAzureFunctions.Methods
                     foreach(var item in await queryResult.GetNextAsTwinAsync())
                         deviceTwinList.Add(item);
                     
-                return MethodResponseMessage.CreateReponseMessage(req, HttpStatusCode.OK, deviceTwinList);
+                return MethodResponseMessage.CreateReponseMessage(req, HttpStatusCode.OK, JsonConvert.SerializeObject(deviceTwinList));
             }
             catch (Exception ex) { Debug.WriteLine(ex.Message); }
 
             return MethodResponseMessage.CreateReponseMessage(req, HttpStatusCode.BadRequest, "Bad Request");
-
         }
     }
 }

@@ -2,12 +2,14 @@
 using IoTDevicesLibrary.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -25,10 +27,9 @@ namespace Speakers
                 })
                 .ConfigureServices((config, services) =>
                 {
+                    services.AddSingleton<NetworkService>();
                     services.AddSingleton<MainWindow>();
-                    services.AddSingleton(new DeviceConfiguration(config.Configuration.GetConnectionString("Speakers")));
-                    services.AddSingleton<INetworkService, NetworkService>();
-                    services.AddSingleton<IDeviceService, DeviceService>();
+                    services.AddSingleton<DeviceService>(new DeviceService("https://iotdevicesfunctionapp.azurewebsites.net/api/AddDevice?code=RRFIDOSBMfKabTuZWkX6uhqdenfyeHYA-7sahn5-rn8BAzFujVYvAw==", "speakers"));
                 })
                 .Build();
         }

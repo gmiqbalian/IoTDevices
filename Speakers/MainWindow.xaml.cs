@@ -1,9 +1,11 @@
 ﻿using IoTDevicesLibrary.Models;
 using IoTDevicesLibrary.Services;
+using Microsoft.Azure.Devices.Shared;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -11,21 +13,33 @@ namespace Speakers
 {
     public partial class MainWindow : Window
     {
-        private readonly INetworkService _networkService;
-        private readonly IDeviceService _deviceService;
-        private readonly DeviceConfiguration _deviceConfiguration;
-        public MainWindow(INetworkService networkService, IDeviceService deviceService, DeviceConfiguration deviceConfiguration)
+        private readonly NetworkService _networkService;
+        private readonly DeviceService _deviceService;
+        public MainWindow(NetworkService networkService, DeviceService deviceService)
         {
             InitializeComponent();
 
             _networkService = networkService;
             _deviceService = deviceService;
-            _deviceConfiguration = deviceConfiguration;
 
-            Task.WhenAll(TestConnectivityAsync(),
+
+            Task.WhenAll(ConfigureDevice(),
+                GetConnectionStatusAsync(),
                 ToggleSpeakersState(),
-                SendTelemetryDataAsync()
-                );
+                SendTelemetryDataAsync());
+
+        }
+        private async Task ConfigureDevice()
+        {
+            var twinCollection = new TwinCollection();
+            twinCollection["deviceType"] = "speakers";
+            twinCollection["location"] = "lounge";
+
+            if(_deviceService.IsConfigured)
+            {
+                await _deviceService.UpdateTwinAsync(twinCollection);
+                await _deviceService.RegisterDirectMethodToCloud();
+            }
         }
 
         private async Task ToggleSpeakersState()
@@ -34,7 +48,7 @@ namespace Speakers
 
             while (true)
             {
-                if (_deviceConfiguration.IsSendingAllowed)
+                if (_deviceService.IsSendingAllowed)
                     machine.Begin();
                 else
                     machine.Stop();
@@ -42,7 +56,7 @@ namespace Speakers
                 await Task.Delay(5000);
             }
         }
-        private async Task TestConnectivityAsync()
+        private async Task GetConnectionStatusAsync()
         {
             while (true)
             {
@@ -61,7 +75,7 @@ namespace Speakers
         {
             while (true)
             {
-                if (_deviceConfiguration.IsSendingAllowed)
+                if (_deviceService.IsSendingAllowed)
                 {
                     var payload = new
                     {
@@ -70,13 +84,13 @@ namespace Speakers
                         DeviceState = "active",
                         TimeStamp = DateTime.Now
                     };
-                    var json = JsonConvert.SerializeObject(payload);
-
-                    if (await _deviceService.SendDataAsync(json))
-                        MessageToCloud.Text = $"Message sent to cloud : {json}";
-
+                    
+                    if (await _deviceService.SendDataAsync(JsonConvert.SerializeObject(payload)))
+                    
                     await Task.Delay(1000);
-                };
+                }
+                else
+                    await _deviceService.SendDataAsync(JsonConvert.SerializeObject("Sending not allowed."));
             }
         }
     }

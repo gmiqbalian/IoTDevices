@@ -1,5 +1,8 @@
 ﻿using IoTDevicesLibrary.Models;
 using IoTDevicesLibrary.Services;
+using Microsoft.Azure.Devices.Shared;
+using Newtonsoft.Json;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -11,17 +14,29 @@ public partial class MainWindow : Window
 {
     private readonly NetworkService _networkService;
     private readonly DeviceService _deviceService;
-    private readonly DeviceConfiguration _deviceConfiguration;
-    public MainWindow(NetworkService networkService, DeviceService deviceService, DeviceConfiguration deviceConfiguration)
+    public MainWindow(NetworkService networkService, DeviceService deviceService)
     {
         InitializeComponent();
 
         _networkService = networkService;
         _deviceService = deviceService;
-        _deviceConfiguration = deviceConfiguration;
 
-        Task.WhenAll(TestConnectivityAsync(),
-            ToggleMachineState());
+        Task.WhenAll(ConfigureDevice(),
+            GetConnectionStatusAsync(),
+            ToggleMachineState(),
+            SendTelemetryDataAsync());
+    }
+    private async Task ConfigureDevice()
+    {
+        var twinCollection = new TwinCollection();
+        twinCollection["deviceType"] = "WashingMachine";
+        twinCollection["location"] = "Washroom";
+
+        if (_deviceService.IsConfigured)
+        {
+            await _deviceService.UpdateTwinAsync(twinCollection);
+            await _deviceService.RegisterDirectMethodToCloud();
+        }
     }
     private async Task ToggleMachineState()
     {
@@ -29,7 +44,7 @@ public partial class MainWindow : Window
         
         while (true)
         {
-            if (_deviceConfiguration.IsSendingAllowed)
+            if (_deviceService.IsSendingAllowed)
                 machine.Begin();
             else
                 machine.Stop();
@@ -37,7 +52,7 @@ public partial class MainWindow : Window
             await Task.Delay(5000);
         }
     }
-    private async Task TestConnectivityAsync()
+    private async Task GetConnectionStatusAsync()
     {
         while (true)
         {
@@ -50,6 +65,26 @@ public partial class MainWindow : Window
                 ConnectivityStatus.Background = Brushes.Red;
 
             await Task.Delay(1000);
+        }
+    }
+    private async Task SendTelemetryDataAsync()
+    {
+        while (true)
+        {
+            if (_deviceService.IsSendingAllowed)
+            {
+                var payload = new
+                {
+                    DeviceState = "active",
+                    TimeStamp = DateTime.Now
+                };
+
+                if (await _deviceService.SendDataAsync(JsonConvert.SerializeObject(payload)))
+
+                    await Task.Delay(1000);
+            }
+            else
+                await _deviceService.SendDataAsync(JsonConvert.SerializeObject("Sending not allowed."));
         }
     }
 }

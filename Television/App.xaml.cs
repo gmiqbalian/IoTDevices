@@ -25,11 +25,9 @@ namespace Television
                 })
                 .ConfigureServices((config, services) =>
                 {
+                    services.AddSingleton<NetworkService>();
                     services.AddSingleton<MainWindow>();
-                    services.AddSingleton(new DeviceConfiguration(config.Configuration.GetConnectionString("Tv")));
-                    services.AddSingleton<IDeviceService, DeviceService>();
-                    services.AddSingleton<INetworkService, NetworkService>();
-
+                    services.AddSingleton<DeviceService>(new DeviceService("https://iotdevicesfunctionapp.azurewebsites.net/api/AddDevice?code=RRFIDOSBMfKabTuZWkX6uhqdenfyeHYA-7sahn5-rn8BAzFujVYvAw==", "tv"));
                 })
                 .Build();
         }

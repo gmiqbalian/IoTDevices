@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace IoTDevicesLibrary.Services;
 
-public class NetworkService : INetworkService
+public class NetworkService
 {
     public async Task<string> TestConnectivityAsync(string ipAddress = "8.8.8.8")
     {

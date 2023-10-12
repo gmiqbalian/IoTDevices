@@ -29,7 +29,7 @@ namespace IoTDevicesAzureFunctions.Methods
                     var device = await _registryManager.GetDeviceAsync(deviceIdFromUrl);
                 
                     if(device is not null)
-                        return MethodResponseMessage.CreateReponseMessage(req, HttpStatusCode.OK, device);
+                        return MethodResponseMessage.CreateReponseMessage(req, HttpStatusCode.OK, JsonConvert.SerializeObject(device));
                 }
             }
             catch (Exception ex) { Debug.WriteLine(ex.Message); }

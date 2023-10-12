@@ -25,10 +25,9 @@ namespace WashingMachine
                 })
                 .ConfigureServices((config, services) =>
                 {
-                    services.AddSingleton<MainWindow>();
-                    services.AddSingleton(new DeviceConfiguration(config.Configuration.GetConnectionString("WashingMachine")));
                     services.AddSingleton<NetworkService>();
-                    services.AddSingleton<DeviceService>();
+                    services.AddSingleton<MainWindow>();
+                    services.AddSingleton<DeviceService>(new DeviceService("https://iotdevicesfunctionapp.azurewebsites.net/api/AddDevice?code=RRFIDOSBMfKabTuZWkX6uhqdenfyeHYA-7sahn5-rn8BAzFujVYvAw==", "washingmachine"));
                 })
                 .Build();
         }
