@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WashingMachine", "WashingMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Speakers", "Speakers\Speakers.csproj", "{5AFC6D3D-A007-4391-AF2F-047FEA4D3FE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTDevicesAzureFunctions", "IoTDevicesAzureFunctions\IoTDevicesAzureFunctions.csproj", "{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoTDevicesAzureFunctions", "IoTDevicesAzureFunctions\IoTDevicesAzureFunctions.csproj", "{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

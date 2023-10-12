@@ -22,7 +22,6 @@ namespace Speakers
             _deviceService = deviceService;
             _deviceConfiguration = deviceConfiguration;
 
-            //Task.Run(SendTelemetryDataAsync);
             Task.WhenAll(TestConnectivityAsync(),
                 ToggleSpeakersState(),
                 SendTelemetryDataAsync()
