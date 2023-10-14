@@ -1,4 +1,5 @@
-﻿using IoTDevicesDataLibrary.Services;
+﻿using IoTDevicesLibrary.Models;
+using IoTDevicesLibrary.Services;
 using Microsoft.Azure.Devices.Shared;
 using Newtonsoft.Json;
 using System;
@@ -12,43 +13,44 @@ namespace WashingMachine;
 public partial class MainWindow : Window
 {
     private readonly NetworkService _networkService;
-    private readonly DeviceManager _deviceManager;
-    public MainWindow(NetworkService networkService, DeviceManager deviceManager)
+    private readonly DeviceService _deviceService;
+    public MainWindow(NetworkService networkService, DeviceService deviceService)
     {
         InitializeComponent();
 
         _networkService = networkService;
-        _deviceManager = deviceManager;
+        _deviceService = deviceService;
 
-        Task.WhenAll(GetConnectionStatusAsync(),
-                UpdateTwin(),
-                _deviceManager.RegisterDirectMethodsToCloud(),
-                SendTelemetryDataToCloud(),
-                ToggleDeviceState());
+        Task.WhenAll(ConfigureDevice(),
+            GetConnectionStatusAsync(),
+            ToggleMachineState(),
+            SendTelemetryDataAsync());
     }
-    
-    private async Task ToggleDeviceState()
+    private async Task ConfigureDevice()
     {
-        Storyboard device = (Storyboard)this.FindResource("MachineStoryboard");
+        var twinCollection = new TwinCollection();
+        twinCollection["deviceType"] = "WashingMachine";
+        twinCollection["location"] = "Washroom";
+
+        if (_deviceService.IsConfigured)
+        {
+            await _deviceService.UpdateTwinAsync(twinCollection);
+            await _deviceService.RegisterDirectMethodToCloud();
+        }
+    }
+    private async Task ToggleMachineState()
+    {
+        Storyboard machine = (Storyboard)this.FindResource("MachineStoryboard");
+        
         while (true)
         {
-            var state = string.Empty;
-            if (_deviceManager.IsSendingAllowed)
-            {
-                device.Begin();
-                state = "ON";
-                DeviceState.Text = $"{state}";
-            }
+            if (_deviceService.IsSendingAllowed)
+                machine.Begin();
             else
-            {
-                device.Stop();
-                state = "OFF";
-                DeviceState.Text = $"{state}";
-            }
+                machine.Stop();
 
-            await Task.Delay(1000);
+            await Task.Delay(5000);
         }
-
     }
     private async Task GetConnectionStatusAsync()
     {
@@ -65,31 +67,24 @@ public partial class MainWindow : Window
             await Task.Delay(1000);
         }
     }
-    private async Task UpdateTwin()
-    {
-        var twincollection = new TwinCollection();
-        twincollection["deviceType"] = "wpf";
-        twincollection["deviceName"] = "washingmachine";
-        twincollection["location"] = "washroom";
-
-        await _deviceManager.UpdateTwinPropsAsync(twincollection);
-    }
-    private async Task SendTelemetryDataToCloud()
+    private async Task SendTelemetryDataAsync()
     {
         while (true)
         {
-            if (_deviceManager.IsSendingAllowed)
+            if (_deviceService.IsSendingAllowed)
             {
                 var payload = new
                 {
-                    WaterLevel = "5l",
-                    WaterTemp = "30",
-                    Time = DateTime.Now.ToString("HH:mm:ss")
+                    DeviceState = "active",
+                    TimeStamp = DateTime.Now
                 };
 
-                await _deviceManager.SendTelemetryDataAsync(JsonConvert.SerializeObject(payload), 5000);
-                CloudMessage.Text = $"WaterLevel: {payload.WaterLevel}\nWaterTemp: {payload.WaterTemp}\nTime: {payload.Time}";
+                if (await _deviceService.SendDataAsync(JsonConvert.SerializeObject(payload)))
+
+                    await Task.Delay(1000);
             }
+            else
+                await _deviceService.SendDataAsync(JsonConvert.SerializeObject("Sending not allowed."));
         }
     }
 }
