@@ -23,7 +23,7 @@ namespace IoTDevicesAzureFunctions.DataContext
         {
             modelBuilder.Entity<DeviceToCloudMessage>(entity =>
             {
-                entity.HasKey(k => k.DeviceId);
+                entity.HasKey(d => d.MessageId);
                 entity.ToContainer("Messages");
                 entity.HasPartitionKey(entity => entity.PartitionKey);
             });

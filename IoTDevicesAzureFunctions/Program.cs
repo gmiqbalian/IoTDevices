@@ -7,6 +7,8 @@ var host = new HostBuilder()
     .ConfigureAppConfiguration(config => config.AddJsonFile("local.settings.json"))
     .ConfigureServices(services =>
     {
+        services.AddDbContext<CosmosDbContext>(
+            x => x.UseCosmos(config.Configuration.GetConnectionString("CosmosDb")!, "gm"));
     })
     .Build();
 

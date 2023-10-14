@@ -17,6 +17,9 @@ namespace Speakers
         private readonly DeviceService _deviceService;
         public MainWindow(NetworkService networkService, DeviceService deviceService)
         {
+
+            Task.Delay(5000);
+
             InitializeComponent();
 
             _networkService = networkService;
@@ -84,10 +87,23 @@ namespace Speakers
                         DeviceState = "active",
                         TimeStamp = DateTime.Now
                     };
-                    
-                    if (await _deviceService.SendDataAsync(JsonConvert.SerializeObject(payload)))
-                    
-                    await Task.Delay(1000);
+
+                    await _deviceManager.SendTelemetryDataAsync(JsonConvert.SerializeObject(payload), 10000);
+                    CloudMessage.Text = $"Volume: {payload.Volume}\nBattery: {payload.Battery}\nTime: {payload.Time}";
+                }
+            }
+        }
+        private async Task ToggleDeviceState()
+        {
+            Storyboard device = (Storyboard)FindResource("SpeakerStoryboard");
+            while (true)
+            {
+                var state = string.Empty;
+                if (_deviceManager.IsSendingAllowed)
+                {
+                    device.Begin();
+                    state = "ON";
+                    DeviceState.Text = $"{state}";
                 }
                 else
                     await _deviceService.SendDataAsync(JsonConvert.SerializeObject("Sending not allowed."));
