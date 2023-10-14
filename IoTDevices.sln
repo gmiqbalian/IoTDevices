@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Speakers", "Speakers\Speake
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoTDevicesAzureFunctions", "IoTDevicesAzureFunctions\IoTDevicesAzureFunctions.csproj", "{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoTDevicesDataLibrary", "IoTDevicesDataLibrary\IoTDevicesDataLibrary.csproj", "{0F626CCF-20EB-4997-8136-65DAA5C176A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAD5CC46-30B1-4E7F-92FB-B97E3939B8DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F626CCF-20EB-4997-8136-65DAA5C176A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F626CCF-20EB-4997-8136-65DAA5C176A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F626CCF-20EB-4997-8136-65DAA5C176A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F626CCF-20EB-4997-8136-65DAA5C176A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

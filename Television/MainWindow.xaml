@@ -15,10 +15,7 @@
         <Grid Grid.Row="0">
             <TextBlock  
                        FontFamily="{StaticResource FontAwesome-Regular}"
-                       Text="&#xf26c;"
-                       FontSize="180"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"/>
+                       Text="&#xf26c;" Style="{StaticResource DeviceIcon}"/>
 
             <TextBlock FontFamily="{StaticResource FontAwesome-Solid}" 
                        x:Name="MusicIcon"
@@ -27,7 +24,7 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        Margin="-15 -45 0 0"
-                       Visibility="Hidden">
+                       Visibility="Collapsed">
                 <TextBlock.RenderTransform>
                     <TranslateTransform x:Name="ShakeIcon" X="0" Y="0"/>
                 </TextBlock.RenderTransform>
@@ -36,16 +33,11 @@
         </Grid>
         
         <Grid Grid.Row="1">
-            <TextBlock 
-                x:Name="ConnectivityStatus"
-                Text="Disconnected"
-                FontSize="25"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="Red"
-                Foreground="White"
-                Padding="15 15 15 15"
-                Margin="0 40 0 40"/>
+            <StackPanel>
+                <TextBlock x:Name="ConnectivityStatus" Style="{StaticResource ConnectivityStatus}" />
+                <TextBlock x:Name="DeviceState" Style="{StaticResource DeviceState}" />
+                <TextBlock x:Name="CloudMessage" Style="{StaticResource CloudMessage}"/>
+            </StackPanel>
         </Grid>
     </Grid>
 

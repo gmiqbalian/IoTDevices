@@ -5,16 +5,22 @@ using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace IoTDevicesAzureFunctions.Methods
 {
-    public class GetAllDevicesFromCloud : GenericMethod
+    public class GetAllDevicesFromCloud
     {
-
-        public GetAllDevicesFromCloud()
+        public readonly RegistryManager _registryManager;
+        public readonly IConfiguration _configuration;
+        public string? IotHubConnectionString;
+        public GetAllDevicesFromCloud(IConfiguration configuration)
         {
+            _configuration = configuration;
+            IotHubConnectionString = _configuration.GetConnectionString("iotHub");
+            _registryManager = RegistryManager.CreateFromConnectionString(IotHubConnectionString);
         }
 
         [Function("GetAllDevicesFromCloud")]

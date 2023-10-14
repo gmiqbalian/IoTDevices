@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IoTDevicesLibrary.Models
+namespace IoTDevicesDataLibrary.Models
 {
-    public class IotDevice
+    public class ResponseMessage
     {
-        public string DeviceId { get; set; }
+        public string? Message { get; set; }
     }
 }

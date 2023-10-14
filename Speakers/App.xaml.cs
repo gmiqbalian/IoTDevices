@@ -1,16 +1,9 @@
-﻿using IoTDevicesLibrary.Models;
-using IoTDevicesLibrary.Services;
+﻿using IoTDevicesDataLibrary.Contexts;
+using IoTDevicesDataLibrary.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Speakers
@@ -27,9 +20,13 @@ namespace Speakers
                 })
                 .ConfigureServices((config, services) =>
                 {
-                    services.AddSingleton<NetworkService>();
+                    services.AddDbContext<DataContext>(x => x.UseSqlite("Data Source=Database.sqlite.db"));
+
                     services.AddSingleton<MainWindow>();
-                    services.AddSingleton<DeviceService>(new DeviceService("https://iotdevicesfunctionapp.azurewebsites.net/api/AddDevice?code=RRFIDOSBMfKabTuZWkX6uhqdenfyeHYA-7sahn5-rn8BAzFujVYvAw==", "speakers"));
+                    services.AddSingleton<NetworkService>();
+                    services.AddSingleton(new DeviceManager(
+                        config.Configuration.GetConnectionString("apiurl")!,
+                        "speakers"));
                 })
                 .Build();
         }
@@ -44,3 +41,4 @@ namespace Speakers
         }
     }
 }
+    

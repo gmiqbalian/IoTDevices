@@ -1,11 +1,11 @@
-﻿using IoTDevicesLibrary.Models;
-using IoTDevicesLibrary.Services;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using IoTDevicesDataLibrary.Services;
 using Microsoft.Azure.Devices.Shared;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
@@ -13,48 +13,21 @@ namespace Speakers
 {
     public partial class MainWindow : Window
     {
-        private readonly NetworkService _networkService;
-        private readonly DeviceService _deviceService;
-        public MainWindow(NetworkService networkService, DeviceService deviceService)
+        private NetworkService _networkService;
+        private DeviceManager _deviceManager;
+        
+        public MainWindow(NetworkService networkService, DeviceManager deviceManager, IConfiguration configuration)
         {
             InitializeComponent();
 
             _networkService = networkService;
-            _deviceService = deviceService;
+            _deviceManager = deviceManager;
 
-
-            Task.WhenAll(ConfigureDevice(),
-                GetConnectionStatusAsync(),
-                ToggleSpeakersState(),
-                SendTelemetryDataAsync());
-
-        }
-        private async Task ConfigureDevice()
-        {
-            var twinCollection = new TwinCollection();
-            twinCollection["deviceType"] = "speakers";
-            twinCollection["location"] = "lounge";
-
-            if(_deviceService.IsConfigured)
-            {
-                await _deviceService.UpdateTwinAsync(twinCollection);
-                await _deviceService.RegisterDirectMethodToCloud();
-            }
-        }
-
-        private async Task ToggleSpeakersState()
-        {
-            Storyboard machine = (Storyboard)this.FindResource("SpeakerStoryboard");
-
-            while (true)
-            {
-                if (_deviceService.IsSendingAllowed)
-                    machine.Begin();
-                else
-                    machine.Stop();
-
-                await Task.Delay(5000);
-            }
+            Task.WhenAll(GetConnectionStatusAsync(),
+                UpdateTwinToCloud(),
+                _deviceManager.RegisterDirectMethodsToCloud(),
+                SendTelemetryDataToCloud(),
+                ToggleDeviceState()) ;
         }
         private async Task GetConnectionStatusAsync()
         {
@@ -71,26 +44,53 @@ namespace Speakers
                 await Task.Delay(1000);
             }
         }
-        private async Task SendTelemetryDataAsync()
+        private async Task UpdateTwinToCloud()
+        {
+            var twincollection = new TwinCollection();
+            twincollection["deviceType"] = "wpf";
+            twincollection["deviceName"] = "speakers";
+            twincollection["location"] = "lounge";
+
+            await _deviceManager.UpdateTwinPropsAsync(twincollection);
+        }
+        private async Task SendTelemetryDataToCloud()
         {
             while (true)
             {
-                if (_deviceService.IsSendingAllowed)
+                if (_deviceManager.IsSendingAllowed)
                 {
                     var payload = new
                     {
-                        BatteryLevel = "70%",
-                        SpeakerTemp = "2",
-                        DeviceState = "active",
-                        TimeStamp = DateTime.Now
+                        Volume = "16db",
+                        Battery = "20%",
+                        Time = DateTime.Now.ToString("HH:mm:ss")
                     };
-                    
-                    if (await _deviceService.SendDataAsync(JsonConvert.SerializeObject(payload)))
-                    
-                    await Task.Delay(1000);
+
+                    await _deviceManager.SendTelemetryDataAsync(JsonConvert.SerializeObject(payload), 5000);
+                    CloudMessage.Text = $"Volume: {payload.Volume}\nBattery: {payload.Battery}\nTime: {payload.Time}";
+                }
+            }
+        }
+        private async Task ToggleDeviceState()
+        {
+            Storyboard device = (Storyboard)FindResource("SpeakerStoryboard");
+            while (true)
+            {
+                var state = string.Empty;
+                if (_deviceManager.IsSendingAllowed)
+                {
+                    device.Begin();
+                    state = "ON";
+                    DeviceState.Text = $"{state}";
                 }
                 else
-                    await _deviceService.SendDataAsync(JsonConvert.SerializeObject("Sending not allowed."));
+                {
+                    device.Stop();
+                    state = "OFF";
+                    DeviceState.Text = $"{state}";
+                }
+
+                await Task.Delay(1000);
             }
         }
     }

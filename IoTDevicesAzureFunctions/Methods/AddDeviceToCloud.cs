@@ -4,16 +4,21 @@ using IoTDevicesAzureFunctions.Models;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace IoTDevicesAzureFunctions.Methods
 {
-    public class AddDeviceToCloud : GenericMethod
+    public class AddDeviceToCloud
     {
-
-        public AddDeviceToCloud()
+        public readonly RegistryManager _registryManager;
+        public readonly IConfiguration _configuration;
+        public string? IotHubConnectionString;
+        public AddDeviceToCloud(IConfiguration configuration)
         {
+            _configuration = configuration;
+            IotHubConnectionString = _configuration.GetConnectionString("iotHub");
+            _registryManager = RegistryManager.CreateFromConnectionString(IotHubConnectionString);
         }
 
         [Function("AddDeviceToCloud")]
@@ -29,7 +34,7 @@ namespace IoTDevicesAzureFunctions.Methods
                     if (device is null)
                         device = await _registryManager.AddDeviceAsync(new Device(deviceIdRequestBody.DeviceId));
                         
-                    var deviceConnectionString = $"{IotHubConnectionString.Split(";")[0]};DeviceId={device.Id};SharedAccessKey={device.Authentication.SymmetricKey.PrimaryKey}";
+                    var deviceConnectionString = $"{IotHubConnectionString!.Split(";")[0]};DeviceId={device.Id};SharedAccessKey={device.Authentication.SymmetricKey.PrimaryKey}";
                     return MethodResponseMessage.CreateReponseMessage(req, HttpStatusCode.OK, deviceConnectionString);
                 }
             }

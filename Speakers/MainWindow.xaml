@@ -15,10 +15,7 @@
         <Grid Grid.Row="0">
             <TextBlock  
                 FontFamily="{StaticResource FontAwesome-Regular}"
-                Text="&#xf8df;"
-                FontSize="180"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center">
+                Text="&#xf8df;" Style="{StaticResource DeviceIcon}">
                 
                 <TextBlock.RenderTransform>
                     <TranslateTransform x:Name="Speakers" X="0" Y="0"/>
@@ -28,22 +25,11 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <TextBlock 
-                x:Name="ConnectivityStatus"
-                Text="Disconnected"
-                FontSize="25"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="Red"
-                Foreground="White"
-                Padding="15 15 15 15"
-                Margin="0 40 0 40"/>
-
-            <TextBlock x:Name="MessageToCloud" 
-                       HorizontalAlignment="Center"
-                       FontSize="20"
-                       Text="text">
-            </TextBlock>
+            <StackPanel>
+                <TextBlock x:Name="ConnectivityStatus" Style="{StaticResource ConnectivityStatus}" />
+                <TextBlock x:Name="DeviceState" Style="{StaticResource DeviceState}" />
+                <TextBlock x:Name="CloudMessage" Style="{StaticResource CloudMessage}"/>
+            </StackPanel>
         </Grid>
     </Grid>
     <Window.Resources>

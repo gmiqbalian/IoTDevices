@@ -1,4 +1,4 @@
-﻿using IoTDevicesLibrary.Services;
+﻿using IoTDevicesDataLibrary.Services;
 using Microsoft.Azure.Devices.Shared;
 using Newtonsoft.Json;
 using System;
@@ -11,51 +11,54 @@ namespace Television
 {
     public partial class MainWindow : Window
     {
-        private readonly DeviceService _deviceService;
+        private readonly DeviceManager _deviceManager;
         private readonly NetworkService _networkService;
-        public MainWindow(DeviceService deviceService, NetworkService networkService)
+        public MainWindow(DeviceManager deviceManager, NetworkService networkService)
         {
             InitializeComponent();
 
-            _deviceService = deviceService;
+            _deviceManager = deviceManager;
             _networkService = networkService;
 
-            Task.WhenAll(ConfigureDevice(),
-                GetConnectionStatusAsync(),
-                ToggleMusicIconStateAsync(),
-                SendTelemetryDataAsync());
+            Task.WhenAll(GetConnectionStatusAsync(),
+                UpdateTwin(),
+                _deviceManager.RegisterDirectMethodsToCloud(),
+                SendTelemetryDataToCloud(),
+                ToggleDeviceState());
         }
-        private async Task ConfigureDevice()
+        private async Task ToggleDeviceState()
         {
-            var twinCollection = new TwinCollection();
-            twinCollection["deviceType"] = "TV";
-            twinCollection["location"] = "lounge";
-
-            if (_deviceService.IsConfigured)
+            Storyboard device = (Storyboard)this.FindResource("TvStoryboard");
+            while (true)
             {
-                await _deviceService.UpdateTwinAsync(twinCollection);
-                await _deviceService.RegisterDirectMethodToCloud();
-            }
-        }
-        private async Task ToggleMusicIconStateAsync()
-        {
-            Storyboard tv = (Storyboard)this.FindResource("TvStoryboard");
-
-            while(true)
-            {
-                if (_deviceService.IsSendingAllowed)
+                var state = string.Empty;
+                if (_deviceManager.IsSendingAllowed)
                 {
+                    device.Begin();
                     MusicIcon.Visibility = Visibility.Visible;
-                    tv.Begin();
+                    state = "ON";
+                    DeviceState.Text = $"{state}";
                 }
                 else
                 {
-                    MusicIcon.Visibility = Visibility.Hidden;
-                    tv.Stop();
+                    device.Stop();
+                    MusicIcon.Visibility = Visibility.Collapsed;
+                    state = "OFF";
+                    DeviceState.Text = $"{state}";
                 }
-            
-                await Task.Delay(5000);
+
+                await Task.Delay(1000);
             }
+
+        }
+        private async Task UpdateTwin()
+        {
+            var twincollection = new TwinCollection();
+            twincollection["deviceType"] = "wpf";
+            twincollection["deviceName"] = "television";
+            twincollection["location"] = "lounge";
+
+            await _deviceManager.UpdateTwinPropsAsync(twincollection);
         }
         private async Task GetConnectionStatusAsync()
         {
@@ -64,33 +67,31 @@ namespace Television
                 var status = await _networkService.TestConnectivityAsync();
                 ConnectivityStatus.Text = status;
 
-                if(status.ToLower() == "connected")
+                if (status.ToLower() == "connected")
                     ConnectivityStatus.Background = Brushes.Green;
-                else if(status.ToLower() == "disconnected")
+                else if (status.ToLower() == "disconnected")
                     ConnectivityStatus.Background = Brushes.Red;
 
                 await Task.Delay(1000);
             }
         }
-        private async Task SendTelemetryDataAsync()
+        private async Task SendTelemetryDataToCloud()
         {
             while (true)
             {
-                if (_deviceService.IsSendingAllowed)
+                if (_deviceManager.IsSendingAllowed)
                 {
                     var payload = new
                     {
-                        DeviceState = "active",
-                        TimeStamp = DateTime.Now
+                        Volume = "16db",
+                        Battery = "20%",
+                        Channel = "svt",
+                        Time = DateTime.Now.ToString("HH:mm:ss")
                     };
 
-                    await _deviceService.SendDataAsync(JsonConvert.SerializeObject(payload));
-
-                    
-                    await Task.Delay(1000);
+                    await _deviceManager.SendTelemetryDataAsync(JsonConvert.SerializeObject(payload), 5000);
+                    CloudMessage.Text = $"Volume: {payload.Volume}\nBattery: {payload.Battery}\nChannel: {payload.Channel}\nTime: {payload.Time}";
                 }
-                else
-                    await _deviceService.SendDataAsync(JsonConvert.SerializeObject("Sending not allowed."));
             }
         }
     }

@@ -10,10 +10,16 @@ using Newtonsoft.Json;
 
 namespace IoTDevicesAzureFunctions.Methods
 {
-    public class GetDeviceFromCloud : GenericMethod
+    public class GetDeviceFromCloud
     {
-        public GetDeviceFromCloud()
+        public readonly RegistryManager _registryManager;
+        public readonly IConfiguration _configuration;
+        public string? IotHubConnectionString;
+        public GetDeviceFromCloud(IConfiguration configuration)
         {
+            _configuration = configuration;
+            IotHubConnectionString = _configuration.GetConnectionString("iotHub");
+            _registryManager = RegistryManager.CreateFromConnectionString(IotHubConnectionString);
         }
 
         [Function("GetDeviceFromCloud")]

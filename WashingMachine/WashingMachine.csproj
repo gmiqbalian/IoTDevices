@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IoTDevicesDataLibrary\IoTDevicesDataLibrary.csproj" />
     <ProjectReference Include="..\IoTDevicesLibrary\IoTDevicesLibrary.csproj" />
   </ItemGroup>
 
