@@ -22,6 +22,7 @@ namespace IoTDevicesDataLibrary.Services
         public bool IsSendingAllowed { get; set; } = true;
         public bool IsConfigured;
         public bool MethodRegistered;
+        private int _telemetryInterval = 5000; //default is set to 5 seconds
         private readonly IServiceProvider? _serviceProvider;
         public readonly DataContext _dbcontext = null!;
 
@@ -37,7 +38,7 @@ namespace IoTDevicesDataLibrary.Services
             try
             {
                 var deviceConfig = await _dbcontext.DeviceConfiguration.FirstOrDefaultAsync();
-                
+
                 if (deviceConfig is null)
                 {
                     using var http = new HttpClient();
@@ -51,7 +52,7 @@ namespace IoTDevicesDataLibrary.Services
                         var connectionString = await result.Content.ReadAsStringAsync();
                         deviceConfig.ConnectionString = connectionString;
                         deviceConfig.DeviceId = deviceId;
-                        
+
                         await _dbcontext.DeviceConfiguration.AddAsync(deviceConfig);
                         await _dbcontext.SaveChangesAsync();
                     }
@@ -86,7 +87,7 @@ namespace IoTDevicesDataLibrary.Services
                 var messageToCloud = new Message(Encoding.UTF8.GetBytes(payload));
                 await _deviceClient!.SendEventAsync(messageToCloud);
             }
-            await Task.Delay(interval);
+            await Task.Delay(_telemetryInterval);
         }
         public async Task RegisterDirectMethodsToCloud()
         {
@@ -114,6 +115,10 @@ namespace IoTDevicesDataLibrary.Services
                         await _deviceClient!.UpdateReportedPropertiesAsync(twinCollection);
                         break;
 
+                    case "telemetry":
+                        _telemetryInterval = Convert.ToInt32(Encoding.UTF8.GetString(req.Data))!;
+                        break;
+
                     default:
                         reponseToCloud.Message = $"Method: {req.Name.ToUpper()} is not found.";
                         return new MethodResponse(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(reponseToCloud)), 404);
@@ -132,7 +137,7 @@ namespace IoTDevicesDataLibrary.Services
             var twin = await _deviceClient.GetTwinAsync();
             if (twin is not null)
                 return twin;
-            
+
             return null!;
         }
     }

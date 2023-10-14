@@ -9,7 +9,8 @@ var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices((config, services) =>
     {
-        services.AddDbContext<CosmosDbContext>(x => x.UseCosmos(config.Configuration.GetConnectionString("CosmosDb")!, "gm-cosmosdb"));
+        services.AddDbContext<CosmosDbContext>(
+            x => x.UseCosmos(config.Configuration.GetConnectionString("CosmosDb")!, "gm"));
     })
     .Build();
 

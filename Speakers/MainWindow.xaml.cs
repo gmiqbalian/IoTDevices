@@ -18,6 +18,9 @@ namespace Speakers
         
         public MainWindow(NetworkService networkService, DeviceManager deviceManager, IConfiguration configuration)
         {
+
+            Task.Delay(5000);
+
             InitializeComponent();
 
             _networkService = networkService;
@@ -66,7 +69,7 @@ namespace Speakers
                         Time = DateTime.Now.ToString("HH:mm:ss")
                     };
 
-                    await _deviceManager.SendTelemetryDataAsync(JsonConvert.SerializeObject(payload), 5000);
+                    await _deviceManager.SendTelemetryDataAsync(JsonConvert.SerializeObject(payload), 10000);
                     CloudMessage.Text = $"Volume: {payload.Volume}\nBattery: {payload.Battery}\nTime: {payload.Time}";
                 }
             }

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Text;
 using Azure.Messaging.EventHubs;
 using IoTDevicesAzureFunctions.DataContext;
@@ -23,11 +24,11 @@ namespace IoTDevicesAzureFunctions.Methods
             {
                 var message = new DeviceToCloudMessage
                 {
+                    MessageId = DateTime.Now.ToString(),
+                    DeviceId = @event.SystemProperties["iothub-connection-device-id"].ToString(),
                     Payload = Encoding.UTF8.GetString(@event.Body.ToArray()),
-                    CreatedOn = DateTime.Now,
-                    DeviceId = @event.SystemProperties["iothub-connection-device-id"].ToString()
                 };
-                _dbContext.Add(message);
+                _dbContext.Messages.Add(message);
                 await _dbContext.SaveChangesAsync();
             }
         }
