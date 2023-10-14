@@ -27,7 +27,7 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        Margin="-15 -45 0 0"
-                       Visibility="Collapsed">
+                       Visibility="Hidden">
                 <TextBlock.RenderTransform>
                     <TranslateTransform x:Name="ShakeIcon" X="0" Y="0"/>
                 </TextBlock.RenderTransform>
